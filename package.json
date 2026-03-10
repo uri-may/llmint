@@ -1,5 +1,6 @@
 {
   "private": true,
+  "packageManager": "pnpm@10.31.0",
   "scripts": {
     "build:contracts": "cd contracts && forge build && forge inspect LLMintVault abi --json > abi/LLMintVault.json",
     "test:contracts": "cd contracts && forge test",
