@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "build:contracts": "cd contracts && forge build && forge inspect LLMintVault abi --json > abi/LLMintVault.json",
+    "test:contracts": "cd contracts && forge test",
+    "test:cli": "pnpm --filter @llmint/cli test",
+    "test": "pnpm test:contracts && pnpm test:cli"
+  }
+}
