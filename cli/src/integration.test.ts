@@ -56,8 +56,8 @@ function waitForAnvil(): Promise<void> {
 
 function deployContracts(): { vault: Address; usdc: Address } {
   const output = execSync(
-    `source ~/.zshenv && forge script script/Deploy.s.sol --rpc-url http://127.0.0.1:8545 --private-key ${ANVIL_KEY} --broadcast 2>&1`,
-    { cwd: CONTRACTS_DIR, encoding: "utf-8", shell: "/bin/zsh" },
+    `forge script script/Deploy.s.sol --rpc-url http://127.0.0.1:8545 --private-key ${ANVIL_KEY} --broadcast 2>&1`,
+    { cwd: CONTRACTS_DIR, encoding: "utf-8", shell: true },
   );
 
   const usdcMatch = output.match(
@@ -83,7 +83,7 @@ beforeAll(async () => {
   anvil = spawn("anvil", [], {
     stdio: "pipe",
     env: { ...process.env, PATH: process.env["PATH"] },
-    shell: "/bin/zsh",
+    shell: true,
   });
 
   await waitForAnvil();
