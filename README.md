@@ -1,8 +1,8 @@
-# LLMint Protocol
+# LLMint
 
 On-chain financial layer for verifiable inference. Deposit USDC, lock funds per session, settle with cryptographic receipts.
 
-**Status:** Stage 1 — contract + CLI on local devnet. No proxy or attestation signing yet.
+**Status:** Stage 2 — contract, CLI, and inference proxy on local devnet.
 
 ## Prerequisites
 
@@ -51,24 +51,43 @@ node cli/dist/index.js init --network local \
   --vault <vault-address> \
   --usdc <usdc-address>
 
-# Deposit USDC
+# Deposit, check balance, withdraw, generate auth token
 node cli/dist/index.js deposit 50
-
-# Check balance
 node cli/dist/index.js balance
-
-# Withdraw
 node cli/dist/index.js withdraw 10
-
-# Generate JWT auth token
 node cli/dist/index.js auth
 ```
 
-### CLI Tests
+## Proxy
+
+OpenAI-compatible inference proxy with Ed25519 attestation signing and on-chain settlement.
 
 ```bash
-# Unit + integration tests (30 tests, starts Anvil automatically)
-pnpm test:cli
+# Configure (copy and edit)
+cp proxy/.env.example proxy/.env
+
+# Run in development
+pnpm --filter @llmint/proxy dev
+
+# Type check
+pnpm typecheck
+```
+
+The proxy authenticates requests via EIP-191 JWT (from `llmint auth`), forwards to an upstream LLM provider, signs each response with Ed25519, and settles session costs on-chain with merkle-proofed batches.
+
+See `proxy/.env.example` for all configuration options.
+
+## Tests
+
+```bash
+# Everything
+pnpm test
+
+# By component
+pnpm test:contracts          # Solidity tests
+pnpm test:cli                # CLI unit + integration
+pnpm test:proxy:unit         # Proxy unit tests
+pnpm test:proxy:integration  # Proxy integration (needs Foundry)
 ```
 
 ## Project Structure
@@ -82,7 +101,10 @@ contracts/       Foundry project (Solidity, not in pnpm workspace)
 cli/             TypeScript CLI (viem + commander)
   src/commands/  init, auth, deposit, withdraw, balance
   src/lib/       config, wallet, jwt, contract, format
-docs/            Spec and implementation plan
+proxy/           Inference proxy (hono + viem + noble)
+  src/           Server, auth, attestation, session, settlement
+  test/          Unit and integration tests
+docs/            Specs and plans
 ```
 
 ## License
