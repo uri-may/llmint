@@ -28,3 +28,7 @@ Thumbs.db
 # Coverage
 coverage/
 lcov.info
+
+# Proxy local storage
+.llmint-proxy/
+.llmint-platform/
