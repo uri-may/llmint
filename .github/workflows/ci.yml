@@ -139,4 +139,4 @@ jobs:
         working-directory: .
 
       - name: Integration tests
-        run: npx vitest run test/integration/
+        run: npx vitest run test/integration/ --no-file-parallelism
